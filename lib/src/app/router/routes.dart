@@ -7,7 +7,10 @@ enum AppRoute {
   signIn(name: 'sign-in', path: '/sign-in'),
   signUp(name: 'sign-up', path: '/sign-up'),
   home(name: 'home', path: '/home'),
-  settings(name: 'settings', path: '/settings')
+  services(name: 'services', path: '/services'),
+  activity(name: 'activity', path: '/activity'),
+  account(name: 'account', path: '/account'),
+  settings(name: 'settings', path: '/account/settings'),
   ;
 
   const AppRoute({required this.name, required this.path});

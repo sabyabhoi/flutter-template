@@ -1,11 +1,15 @@
 import 'package:app/src/app/router/routes.dart';
+import 'package:app/src/features/account/presentation/account_screen.dart';
+import 'package:app/src/features/activity/presentation/activity_screen.dart';
 import 'package:app/src/features/auth/application/auth_controller.dart';
 import 'package:app/src/features/auth/application/auth_state.dart';
 import 'package:app/src/features/auth/presentation/sign_in_screen.dart';
 import 'package:app/src/features/auth/presentation/sign_up_screen.dart';
 import 'package:app/src/features/auth/presentation/splash_screen.dart';
 import 'package:app/src/features/home/presentation/home_screen.dart';
+import 'package:app/src/features/services/presentation/services_screen.dart';
 import 'package:app/src/features/settings/presentation/settings_screen.dart';
+import 'package:app/src/features/shell/presentation/app_shell.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -71,15 +75,56 @@ GoRouter appRouter(Ref ref) {
         path: AppRoute.signUp.path,
         builder: (context, state) => const SignUpScreen(),
       ),
-      GoRoute(
-        name: AppRoute.home.name,
-        path: AppRoute.home.path,
-        builder: (context, state) => const HomeScreen(),
-        routes: [
-          GoRoute(
-            name: AppRoute.settings.name,
-            path: 'settings',
-            builder: (context, state) => const SettingsScreen(),
+      // The four bottom-tab branches share an [AppShell] which renders the
+      // floating nav bar over the active branch's navigator. Each branch
+      // owns its own [Navigator], so swapping tabs preserves nested
+      // navigation state per branch.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            AppShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRoute.home.name,
+                path: AppRoute.home.path,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRoute.services.name,
+                path: AppRoute.services.path,
+                builder: (context, state) => const ServicesScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRoute.activity.name,
+                path: AppRoute.activity.path,
+                builder: (context, state) => const ActivityScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRoute.account.name,
+                path: AppRoute.account.path,
+                builder: (context, state) => const AccountScreen(),
+                routes: [
+                  GoRoute(
+                    name: AppRoute.settings.name,
+                    path: 'settings',
+                    builder: (context, state) => const SettingsScreen(),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),

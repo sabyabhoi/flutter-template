@@ -10,6 +10,15 @@ class AppTheme {
 
   static const Color _seedColor = Color(0xFF6750A4);
 
+  /// Shared corner radius for inputs and buttons. Kept at zero so the
+  /// entire app — text fields, primary buttons, secondary buttons —
+  /// reads as a single visual family instead of the default M3 mix of
+  /// pill-shaped buttons against near-square inputs.
+  static const BorderRadius _shapeRadius = BorderRadius.zero;
+  static final RoundedRectangleBorder _shapeBorder = RoundedRectangleBorder(
+    borderRadius: _shapeRadius,
+  );
+
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(seedColor: _seedColor);
     return _build(scheme);
@@ -37,10 +46,31 @@ class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(48),
+          shape: _shapeBorder,
         ),
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          shape: _shapeBorder,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          shape: _shapeBorder,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(shape: _shapeBorder),
+      ),
       inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(borderRadius: _shapeRadius),
+        enabledBorder: OutlineInputBorder(borderRadius: _shapeRadius),
+        focusedBorder: OutlineInputBorder(borderRadius: _shapeRadius),
+        errorBorder: OutlineInputBorder(borderRadius: _shapeRadius),
+        focusedErrorBorder: OutlineInputBorder(borderRadius: _shapeRadius),
+        disabledBorder: OutlineInputBorder(borderRadius: _shapeRadius),
       ),
     );
   }
