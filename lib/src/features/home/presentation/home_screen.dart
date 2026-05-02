@@ -35,7 +35,10 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Signed in', style: TextStyle(fontSize: 22)),
+              Text(
+                'Signed in',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               if (email != null) ...[
                 const SizedBox(height: 8),
                 Text(email, style: Theme.of(context).textTheme.bodyMedium),

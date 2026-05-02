@@ -7,8 +7,11 @@ class ServicesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Services')),
-      body: const Center(
-        child: Text('Services', style: TextStyle(fontSize: 22)),
+      body: Center(
+        child: Text(
+          'Services',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
       ),
     );
   }

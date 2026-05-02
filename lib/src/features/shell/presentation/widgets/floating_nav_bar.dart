@@ -1,3 +1,5 @@
+import 'package:app/src/core/theme/tokens/app_colors.dart';
+import 'package:app/src/core/theme/tokens/app_radii.dart';
 import 'package:flutter/material.dart';
 
 /// A single tab definition for [FloatingNavBar].
@@ -15,11 +17,12 @@ class FloatingNavItem {
   final bool showBadge;
 }
 
-/// A pill-shaped floating bottom navigation bar.
+/// A floating bottom navigation bar.
 ///
 /// Designed to be placed inside a [Stack] (or `Scaffold.bottomNavigationBar`
 /// with `extendBody: true`), floating over the body with horizontal margins
-/// from the screen edges.
+/// from the screen edges. Reads colours / radii from the app token layer
+/// so it stays in lockstep with the rest of the theme.
 class FloatingNavBar extends StatelessWidget {
   const FloatingNavBar({
     required this.items,
@@ -34,24 +37,18 @@ class FloatingNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    // A near-black surface in both themes — the floating bar reads as a
-    // discrete control that sits on top of the body rather than as part of
-    // it, which is the look the screenshot is going for.
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final barColor = isDark
-        ? const Color(0xFF1F1F1F)
-        : const Color(0xFF1F1F1F);
+    final colors = context.appColors;
 
     return Material(
       color: Colors.transparent,
       child: Container(
         decoration: BoxDecoration(
-          color: barColor,
-          borderRadius: BorderRadius.circular(32),
+          color: colors.card,
+          borderRadius: AppRadii.xlR,
+          border: Border.all(color: colors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.25),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 20,
               offset: const Offset(0, 6),
             ),
@@ -67,7 +64,6 @@ class FloatingNavBar extends StatelessWidget {
                   item: items[i],
                   selected: i == currentIndex,
                   onTap: () => onTap(i),
-                  selectedColor: scheme.primary,
                 ),
               ),
           ],
@@ -82,22 +78,21 @@ class _NavBarItem extends StatelessWidget {
     required this.item,
     required this.selected,
     required this.onTap,
-    required this.selectedColor,
   });
 
   final FloatingNavItem item;
   final bool selected;
   final VoidCallback onTap;
-  final Color selectedColor;
 
   @override
   Widget build(BuildContext context) {
-    final inactiveColor = Colors.white.withValues(alpha: 0.65);
-    final color = selected ? Colors.white : inactiveColor;
+    final colors = context.appColors;
+    final textTheme = Theme.of(context).textTheme;
+    final color = selected ? colors.cardForeground : colors.mutedForeground;
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: AppRadii.mdR,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: Column(
@@ -119,12 +114,9 @@ class _NavBarItem extends StatelessWidget {
                       width: 9,
                       height: 9,
                       decoration: BoxDecoration(
-                        color: selectedColor,
+                        color: colors.destructive,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFF1F1F1F),
-                          width: 2,
-                        ),
+                        border: Border.all(color: colors.card, width: 2),
                       ),
                     ),
                   ),
@@ -133,10 +125,9 @@ class _NavBarItem extends StatelessWidget {
             const SizedBox(height: 3),
             Text(
               item.label,
-              style: TextStyle(
+              style: textTheme.labelSmall?.copyWith(
                 color: color,
-                fontSize: 11,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
           ],

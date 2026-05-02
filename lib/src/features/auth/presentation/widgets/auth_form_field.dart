@@ -130,9 +130,6 @@ class GoogleSignInButton extends StatelessWidget {
             )
           : const _GoogleGlyph(),
       label: const Text('Continue with Google'),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(48),
-      ),
     );
   }
 }

@@ -7,8 +7,11 @@ class ActivityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Activity')),
-      body: const Center(
-        child: Text('Activity', style: TextStyle(fontSize: 22)),
+      body: Center(
+        child: Text(
+          'Activity',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
       ),
     );
   }
