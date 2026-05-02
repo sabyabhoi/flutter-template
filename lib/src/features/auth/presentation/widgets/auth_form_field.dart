@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 /// Plain text/password field used by sign-in & sign-up so both screens
 /// share the same look and validation hooks.
-class AuthFormField extends StatelessWidget {
+///
+/// When [obscureText] is true a visibility toggle is rendered as the
+/// suffix icon, letting the user reveal what they typed.
+class AuthFormField extends StatefulWidget {
   const AuthFormField({
     required this.label,
     required this.controller,
@@ -25,16 +28,35 @@ class AuthFormField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
 
   @override
+  State<AuthFormField> createState() => _AuthFormFieldState();
+}
+
+class _AuthFormFieldState extends State<AuthFormField> {
+  late bool _obscured = widget.obscureText;
+
+  @override
   Widget build(BuildContext context) {
+    final showToggle = widget.obscureText;
     return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      validator: validator,
-      autofillHints: autofillHints,
-      onFieldSubmitted: onSubmitted,
-      decoration: InputDecoration(labelText: label),
+      controller: widget.controller,
+      obscureText: _obscured,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
+      validator: widget.validator,
+      autofillHints: widget.autofillHints,
+      onFieldSubmitted: widget.onSubmitted,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        suffixIcon: showToggle
+            ? IconButton(
+                onPressed: () => setState(() => _obscured = !_obscured),
+                icon: Icon(
+                  _obscured ? Icons.visibility : Icons.visibility_off,
+                ),
+                tooltip: _obscured ? 'Show password' : 'Hide password',
+              )
+            : null,
+      ),
     );
   }
 }
