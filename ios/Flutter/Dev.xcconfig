@@ -1,0 +1,9 @@
+// Per-flavor settings for the Dev flavor.
+// Pair this with `Debug-Dev` / `Release-Dev` / `Profile-Dev` build
+// configurations in Xcode (see README → "iOS flavors") and a `Dev` scheme
+// pointing at those configurations.
+#include "Generated.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.example.app.dev
+APP_DISPLAY_NAME = App (Dev)
+ASSET_PREFIX = AppIcon-Dev

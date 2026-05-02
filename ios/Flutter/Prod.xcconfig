@@ -1,0 +1,9 @@
+// Per-flavor settings for the Prod flavor.
+// Pair this with `Debug-Prod` / `Release-Prod` / `Profile-Prod` build
+// configurations in Xcode (see README → "iOS flavors") and a `Prod` scheme
+// pointing at those configurations.
+#include "Generated.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.example.app
+APP_DISPLAY_NAME = App
+ASSET_PREFIX = AppIcon

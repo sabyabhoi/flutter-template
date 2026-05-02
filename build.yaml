@@ -1,0 +1,20 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          # Generate copy-with, equality, hashCode, toString by default.
+          generic_argument_factories: false
+      json_serializable:
+        options:
+          explicit_to_json: true
+          field_rename: snake
+          create_to_json: true
+          include_if_null: false
+      riverpod_generator:
+        options:
+          provider_family_name: Provider
+      drift_dev:
+        options:
+          store_date_time_values_as_text: true
+          named_parameters: true

@@ -1,0 +1,8 @@
+{
+  "FLAVOR": "dev",
+  "APP_NAME": "App (Dev)",
+  "SUPABASE_URL": "https://YOUR-PROJECT.supabase.co",
+  "SUPABASE_ANON_KEY": "your-public-anon-key",
+  "SENTRY_DSN": "",
+  "API_BASE_URL": "https://api.dev.example.com"
+}

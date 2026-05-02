@@ -1,0 +1,9 @@
+// Per-flavor settings for the Staging flavor.
+// Pair this with `Debug-Staging` / `Release-Staging` / `Profile-Staging`
+// build configurations in Xcode (see README → "iOS flavors") and a
+// `Staging` scheme pointing at those configurations.
+#include "Generated.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.example.app.staging
+APP_DISPLAY_NAME = App (Staging)
+ASSET_PREFIX = AppIcon-Staging

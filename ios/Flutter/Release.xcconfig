@@ -1,0 +1,4 @@
+// Default Release config — used when no `--flavor` is passed.
+// Inherits Prod settings so a vanilla `flutter build ios --release` produces
+// the production bundle id.
+#include "Prod.xcconfig"

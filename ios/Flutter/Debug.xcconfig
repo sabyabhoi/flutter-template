@@ -1,0 +1,4 @@
+// Default Debug config — used when no `--flavor` is passed (e.g. plain
+// `flutter run`). Inherits the Dev flavor settings so the app launches with
+// a sensible bundle id and display name out of the box.
+#include "Dev.xcconfig"
