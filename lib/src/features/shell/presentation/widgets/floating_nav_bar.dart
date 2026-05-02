@@ -48,7 +48,7 @@ class FloatingNavBar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: barColor,
-          borderRadius: BorderRadius.circular(36),
+          borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.25),
@@ -57,7 +57,7 @@ class FloatingNavBar extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 9),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -97,9 +97,9 @@ class _NavBarItem extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(28),
+      borderRadius: BorderRadius.circular(25),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -109,15 +109,15 @@ class _NavBarItem extends StatelessWidget {
                 Icon(
                   selected ? item.activeIcon : item.icon,
                   color: color,
-                  size: 26,
+                  size: 23,
                 ),
                 if (item.showBadge)
                   Positioned(
                     top: -2,
                     right: -4,
                     child: Container(
-                      width: 10,
-                      height: 10,
+                      width: 9,
+                      height: 9,
                       decoration: BoxDecoration(
                         color: selectedColor,
                         shape: BoxShape.circle,
@@ -130,12 +130,12 @@ class _NavBarItem extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 3),
             Text(
               item.label,
               style: TextStyle(
                 color: color,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
               ),
             ),
