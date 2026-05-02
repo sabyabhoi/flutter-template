@@ -15,6 +15,7 @@ class AppConfig {
     required this.supabaseAnonKey,
     required this.sentryDsn,
     required this.apiBaseUrl,
+    required this.oauthRedirectUrl,
   });
 
   /// Build [AppConfig] from compile-time environment values.
@@ -37,6 +38,13 @@ class AppConfig {
     const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
     const sentryDsn = String.fromEnvironment('SENTRY_DSN');
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
+    // Default matches the deep-link scheme/host registered in
+    // android/app/src/main/AndroidManifest.xml and ios/Runner/Info.plist.
+    // Override per-flavor in env/<flavor>.json if you change either.
+    const oauthRedirectUrl = String.fromEnvironment(
+      'OAUTH_REDIRECT_URL',
+      defaultValue: 'com.example.app.auth://login-callback',
+    );
 
     if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
       throw StateError(
@@ -52,6 +60,7 @@ class AppConfig {
       supabaseAnonKey: supabaseAnonKey,
       sentryDsn: sentryDsn,
       apiBaseUrl: apiBaseUrl,
+      oauthRedirectUrl: oauthRedirectUrl,
     );
   }
 
@@ -63,6 +72,12 @@ class AppConfig {
   /// May be empty in dev — Sentry init is skipped when blank.
   final String sentryDsn;
   final String apiBaseUrl;
+
+  /// Deep link Supabase redirects back to after an OAuth provider flow
+  /// completes. Must match a redirect URL allow-listed in the Supabase
+  /// dashboard *and* the platform deep-link config (Android intent-filter
+  /// + iOS `CFBundleURLTypes`).
+  final String oauthRedirectUrl;
 
   bool get sentryEnabled => sentryDsn.isNotEmpty;
 }

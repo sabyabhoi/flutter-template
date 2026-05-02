@@ -77,3 +77,124 @@ abstract class AuthValidators {
     return null;
   }
 }
+
+/// A horizontal divider with centred "or" text. Used to separate the
+/// password form from the OAuth buttons on the auth screens.
+class AuthDivider extends StatelessWidget {
+  const AuthDivider({super.key, this.label = 'or'});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.outlineVariant;
+    return Row(
+      children: [
+        Expanded(child: Divider(color: color)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        Expanded(child: Divider(color: color)),
+      ],
+    );
+  }
+}
+
+/// Outlined "Continue with Google" button. The icon is a tiny inline
+/// SVG-equivalent painted with a [CustomPaint], so we don't pull in an
+/// asset / extra dependency just to render the brand mark.
+class GoogleSignInButton extends StatelessWidget {
+  const GoogleSignInButton({
+    required this.onPressed,
+    required this.isLoading,
+    super.key,
+  });
+
+  final VoidCallback? onPressed;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: isLoading ? null : onPressed,
+      icon: isLoading
+          ? const SizedBox.square(
+              dimension: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const _GoogleGlyph(),
+      label: const Text('Continue with Google'),
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(48),
+      ),
+    );
+  }
+}
+
+class _GoogleGlyph extends StatelessWidget {
+  const _GoogleGlyph();
+
+  @override
+  Widget build(BuildContext context) {
+    // The official Google brand mark colours. Kept inline so we don't
+    // ship a logo asset.
+    return const SizedBox.square(
+      dimension: 18,
+      child: CustomPaint(painter: _GoogleGlyphPainter()),
+    );
+  }
+}
+
+class _GoogleGlyphPainter extends CustomPainter {
+  const _GoogleGlyphPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final r = size.width / 2;
+    final paint = Paint()..style = PaintingStyle.fill;
+
+    const quadrants = <(double, double, Color)>[
+      (-90, 90, Color(0xFF4285F4)), // right half — blue
+      (90, 90, Color(0xFF34A853)), // bottom — green
+      (180, 90, Color(0xFFFBBC05)), // left — yellow
+      (270, 90, Color(0xFFEA4335)), // top — red
+    ];
+
+    for (final (start, sweep, color) in quadrants) {
+      paint.color = color;
+      final rect = Rect.fromCircle(center: Offset(cx, cy), radius: r);
+      canvas.drawArc(
+        rect,
+        start * 3.1415926535 / 180,
+        sweep * 3.1415926535 / 180,
+        true,
+        paint,
+      );
+    }
+
+    canvas
+      // White inner circle so the colour wedges read as a "G"-style mark
+      // without having to ship the actual logo.
+      ..drawCircle(
+        Offset(cx, cy),
+        r * 0.55,
+        Paint()..color = const Color(0xFFFFFFFF),
+      )
+      // Small blue notch on the right to suggest the gap in the "G".
+      ..drawRect(
+        Rect.fromLTWH(cx, cy - r * 0.08, r, r * 0.16),
+        Paint()..color = const Color(0xFF4285F4),
+      );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}

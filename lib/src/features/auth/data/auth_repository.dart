@@ -1,5 +1,6 @@
 import 'package:app/src/core/error/error_mapper.dart';
 import 'package:app/src/core/error/result.dart';
+import 'package:app/src/core/providers/app_config_provider.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
@@ -29,6 +30,12 @@ abstract class AuthRepository {
     required String password,
   });
 
+  /// Kicks off the Google OAuth flow. Returns `true` when the external
+  /// browser was launched successfully — the actual session arrives
+  /// asynchronously via [onAuthStateChange] once Supabase redirects back
+  /// through the configured deep link.
+  Future<Result<bool>> signInWithGoogle();
+
   Future<Result<void>> signOut();
 
   Future<Result<void>> sendPasswordReset(String email);
@@ -36,13 +43,16 @@ abstract class AuthRepository {
 
 class SupabaseAuthRepository implements AuthRepository {
   SupabaseAuthRepository({
+    required String oauthRedirectUrl,
     sb.SupabaseClient? client,
     ErrorMapper mapper = const ErrorMapper(),
   }) : _client = client ?? sb.Supabase.instance.client,
-       _mapper = mapper;
+       _mapper = mapper,
+       _oauthRedirectUrl = oauthRedirectUrl;
 
   final sb.SupabaseClient _client;
   final ErrorMapper _mapper;
+  final String _oauthRedirectUrl;
 
   @visibleForTesting
   sb.SupabaseClient get client => _client;
@@ -84,6 +94,20 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<Result<bool>> signInWithGoogle() {
+    return _mapper.guard(
+      () => _client.auth.signInWithOAuth(
+        sb.OAuthProvider.google,
+        // Native flow: an external browser opens, the user authenticates,
+        // and Supabase redirects back to [_oauthRedirectUrl]. The
+        // supabase_flutter SDK installs an app_links listener at
+        // initialize() time and completes the session for us.
+        redirectTo: _oauthRedirectUrl.isEmpty ? null : _oauthRedirectUrl,
+      ),
+    );
+  }
+
+  @override
   Future<Result<void>> signOut() => _mapper.guard(_client.auth.signOut);
 
   @override
@@ -93,4 +117,7 @@ class SupabaseAuthRepository implements AuthRepository {
 }
 
 @Riverpod(keepAlive: true)
-AuthRepository authRepository(Ref ref) => SupabaseAuthRepository();
+AuthRepository authRepository(Ref ref) {
+  final config = ref.watch(appConfigProvider);
+  return SupabaseAuthRepository(oauthRedirectUrl: config.oauthRedirectUrl);
+}

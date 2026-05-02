@@ -78,6 +78,28 @@ class AuthController extends _$AuthController {
     );
   }
 
+  /// Launches the Google OAuth flow. The session itself arrives later via
+  /// [authEventsProvider] once Supabase redirects back through the
+  /// configured deep link, so on success we *don't* flip to
+  /// `Authenticated` here — we just clear the loading state. On failure
+  /// (e.g. user cancelled the browser, no allow-listed redirect) we
+  /// surface the error like any other auth mutation.
+  Future<void> signInWithGoogle() async {
+    final repo = ref.read(authRepositoryProvider);
+    final previous = state.hasValue
+        ? state.requireValue
+        : const Unauthenticated();
+    state = const AsyncLoading<AuthState>();
+    final result = await repo.signInWithGoogle();
+    switch (result) {
+      case Ok():
+        // Stay unauthenticated until the deep link delivers a session.
+        state = AsyncData<AuthState>(previous);
+      case Err(:final failure):
+        state = AsyncError<AuthState>(failure, _stackOf(failure));
+    }
+  }
+
   Future<void> signOut() async {
     final repo = ref.read(authRepositoryProvider);
     state = const AsyncLoading<AuthState>();

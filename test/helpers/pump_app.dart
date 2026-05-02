@@ -21,6 +21,7 @@ const testConfig = AppConfig(
   supabaseAnonKey: 'test-anon-key',
   sentryDsn: '',
   apiBaseUrl: 'https://api.test.example.com',
+  oauthRedirectUrl: 'com.example.app.auth://login-callback',
 );
 
 /// Build a [ProviderContainer] with sensible test defaults. Provide

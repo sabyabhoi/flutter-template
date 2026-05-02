@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/src/core/error/result.dart';
 import 'package:app/src/features/auth/application/auth_controller.dart';
 import 'package:app/src/features/auth/application/auth_state.dart';
@@ -70,6 +72,69 @@ void main() {
       await container.read(authControllerProvider.notifier).signOut();
       final state = await container.read(authControllerProvider.future);
       expect(state, const AuthState.unauthenticated());
+    });
+
+    test(
+      'signInWithGoogle launches OAuth and stays unauthenticated until '
+      'the deep-link delivers a session',
+      () async {
+        await container.read(authControllerProvider.future);
+
+        // Subscribe before emitting so we can observe the post-deep-link
+        // transition without depending on microtask timing.
+        final authedCompleter = Completer<AuthState>();
+        final sub = container.listen<AsyncValue<AuthState>>(
+          authControllerProvider,
+          (_, next) {
+            final value = next.hasValue ? next.requireValue : null;
+            if (value is Authenticated && !authedCompleter.isCompleted) {
+              authedCompleter.complete(value);
+            }
+          },
+        );
+        addTearDown(sub.close);
+
+        await container
+            .read(authControllerProvider.notifier)
+            .signInWithGoogle();
+
+        expect(fake.googleSignInCount, 1);
+        // Browser launched; we don't have a session yet.
+        final pending = await container.read(authControllerProvider.future);
+        expect(pending, const AuthState.unauthenticated());
+
+        // Simulate the deep-link round-trip: Supabase emits a session.
+        final user = sb.User(
+          id: 'oauth-user-id',
+          appMetadata: const {},
+          userMetadata: const {},
+          aud: 'authenticated',
+          email: 'g@example.com',
+          createdAt: DateTime.now().toIso8601String(),
+        );
+        fake.emit(user);
+
+        final authed = await authedCompleter.future.timeout(
+          const Duration(seconds: 1),
+        );
+        expect(authed, isA<Authenticated>());
+        expect((authed as Authenticated).user.email, 'g@example.com');
+      },
+    );
+
+    test('signInWithGoogle failure surfaces as AsyncError', () async {
+      await container.read(authControllerProvider.future);
+
+      fake.nextGoogleResult = Result<bool>.err(
+        fakeAuthFailure('redirect not allow-listed'),
+      );
+
+      await container
+          .read(authControllerProvider.notifier)
+          .signInWithGoogle();
+
+      final state = container.read(authControllerProvider);
+      expect(state.hasError, isTrue);
     });
   });
 }

@@ -26,6 +26,7 @@ const _smokeConfig = AppConfig(
   supabaseAnonKey: 'test-anon-key',
   sentryDsn: '',
   apiBaseUrl: 'https://api.test.example.com',
+  oauthRedirectUrl: 'com.example.app.auth://login-callback',
 );
 
 Future<void> main() async {

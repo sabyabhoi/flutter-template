@@ -18,6 +18,12 @@ class FakeAuthRepository implements AuthRepository {
   Result<sb.User>? nextSignInResult;
   Result<sb.User?>? nextSignUpResult;
   Result<void>? nextSignOutResult;
+  Result<bool>? nextGoogleResult;
+
+  /// Number of times [signInWithGoogle] has been called. Useful for
+  /// asserting the OAuth flow was kicked off without having to spin up
+  /// a real browser.
+  int googleSignInCount = 0;
 
   @override
   sb.User? get currentUser => _currentUser;
@@ -78,6 +84,19 @@ class FakeAuthRepository implements AuthRepository {
       email: email,
       password: password,
     ).then((r) => r.map<sb.User?>((u) => u));
+  }
+
+  @override
+  Future<Result<bool>> signInWithGoogle() async {
+    googleSignInCount++;
+    final r = nextGoogleResult;
+    if (r != null) {
+      nextGoogleResult = null;
+      return r;
+    }
+    // Default success: pretend the browser launched but no session has
+    // arrived yet. Tests that want a session can call [emit] explicitly.
+    return const Result<bool>.ok(true);
   }
 
   @override

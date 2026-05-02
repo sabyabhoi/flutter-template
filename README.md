@@ -99,6 +99,34 @@ main_<flavor>.dart  ─►  bootstrap(Flavor)
 
 `AuthRepository` returns `Result<T, Failure>` — controllers/UI never see raw `AuthException`/`PostgrestException`/`DioException`.
 
+### Google OAuth
+
+Both auth screens ship a "Continue with Google" button that calls `AuthController.signInWithGoogle()` → `AuthRepository.signInWithGoogle()` → `supabase.auth.signInWithOAuth(OAuthProvider.google)`. The flow is:
+
+1. The native browser opens the Supabase-hosted Google consent page.
+2. After consent, Supabase redirects to `OAUTH_REDIRECT_URL` (a custom-scheme deep link).
+3. The OS reopens the app via the registered intent-filter / `CFBundleURLScheme`, and `supabase_flutter`'s built-in deep-link listener exchanges the code for a session.
+4. `authEventsProvider` emits `signedIn`, `AuthController` flips to `Authenticated`, and the router redirects to `/home`.
+
+Three things must agree on the same URL:
+
+| Where                                                  | What                                                       |
+| ------------------------------------------------------ | ---------------------------------------------------------- |
+| `env/<flavor>.json` → `OAUTH_REDIRECT_URL`             | `com.example.app.auth://login-callback` (template default) |
+| `android/app/src/main/AndroidManifest.xml`             | `<data android:scheme=… android:host=…/>` intent-filter    |
+| `ios/Runner/Info.plist` → `CFBundleURLTypes`           | `CFBundleURLSchemes` array                                 |
+| Supabase dashboard → Authentication → URL Configuration | Add the same URL to the redirect allow-list                |
+
+To use a different scheme (recommended once you change the bundle ID):
+
+1. Update the scheme/host in `AndroidManifest.xml`.
+2. Update `CFBundleURLSchemes` (and `CFBundleURLName`) in `Info.plist`.
+3. Update `OAUTH_REDIRECT_URL` in every `env/<flavor>.json`.
+4. Add the new URL to your Supabase project's allow-listed redirect URLs.
+5. Enable the Google provider under Authentication → Providers and paste your Google Cloud OAuth client ID/secret.
+
+The repository is SDK-agnostic — swapping in `google_sign_in` + `signInWithIdToken` later is a one-method change in `SupabaseAuthRepository`.
+
 ## Environments & flavors
 
 The template ships three flavors. Each one is identified by:

@@ -37,6 +37,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         );
   }
 
+  Future<void> _signInWithGoogle() async {
+    await ref.read(authControllerProvider.notifier).signInWithGoogle();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
@@ -103,6 +107,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 ),
                               )
                             : const Text('Create account'),
+                      ),
+                      const SizedBox(height: 20),
+                      const AuthDivider(),
+                      const SizedBox(height: 20),
+                      GoogleSignInButton(
+                        key: const Key('signUp.google'),
+                        isLoading: auth.isLoading,
+                        onPressed: _signInWithGoogle,
                       ),
                       const SizedBox(height: 12),
                       TextButton(

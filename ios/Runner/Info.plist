@@ -22,6 +22,22 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<!-- OAuth redirect deep link. Must match OAUTH_REDIRECT_URL
+			     in env/<flavor>.json and the redirect URL allow-listed
+			     in the Supabase dashboard. -->
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.example.app.auth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.example.app.auth</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
