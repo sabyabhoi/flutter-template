@@ -54,7 +54,7 @@ class FloatingNavBar extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 9),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -94,7 +94,7 @@ class _NavBarItem extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadii.mdR,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -104,15 +104,15 @@ class _NavBarItem extends StatelessWidget {
                 Icon(
                   selected ? item.activeIcon : item.icon,
                   color: color,
-                  size: 23,
+                  size: 21,
                 ),
                 if (item.showBadge)
                   Positioned(
-                    top: -2,
-                    right: -4,
+                    top: -1,
+                    right: -3,
                     child: Container(
-                      width: 9,
-                      height: 9,
+                      width: 8,
+                      height: 8,
                       decoration: BoxDecoration(
                         color: colors.destructive,
                         shape: BoxShape.circle,
@@ -122,11 +122,12 @@ class _NavBarItem extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 2),
             Text(
               item.label,
               style: textTheme.labelSmall?.copyWith(
                 color: color,
+                fontSize: 10,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
