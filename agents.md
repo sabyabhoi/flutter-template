@@ -1,9 +1,5 @@
 # Agents Guide
 
-Welcome. This file is the orientation guide for AI coding agents (and new human contributors) working in this repo. It assumes nothing about the codebase and points you at the right places to read deeper.
-
-> Lowercase filename `agents.md` is intentional. The de-facto convention is `AGENTS.md` — rename if your tooling expects that.
-
 ## What this project is
 
 A production-ready Flutter template with batteries included:
