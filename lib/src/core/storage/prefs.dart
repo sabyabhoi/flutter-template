@@ -19,6 +19,5 @@ final sharedPreferencesProvider = Provider<SharedPreferences>(
 abstract class PrefsKeys {
   static const themeMode = 'app.theme_mode';
   static const onboardingComplete = 'app.onboarding_complete';
-  static const onboardingAnswers = 'app.onboarding_answers';
   static const localeTag = 'app.locale_tag';
 }

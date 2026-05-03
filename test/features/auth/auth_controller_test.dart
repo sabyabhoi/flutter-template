@@ -129,7 +129,9 @@ void main() {
         fakeAuthFailure('redirect not allow-listed'),
       );
 
-      await container.read(authControllerProvider.notifier).signInWithGoogle();
+      await container
+          .read(authControllerProvider.notifier)
+          .signInWithGoogle();
 
       final state = container.read(authControllerProvider);
       expect(state.hasError, isTrue);

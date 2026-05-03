@@ -104,7 +104,7 @@ final class AuthControllerProvider
   AuthController create() => AuthController();
 }
 
-String _$authControllerHash() => r'de6f745a72c1b835d7fc0b3c3d821ec1c764287a';
+String _$authControllerHash() => r'801549ecdf5e1355763b67ebad35f883b6182867';
 
 /// Single source of truth for "is the user signed in?" used by the router
 /// guard and by feature controllers.
