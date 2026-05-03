@@ -153,22 +153,37 @@ class AppColors extends ThemeExtension<AppColors> {
       card: Color.lerp(card, other.card, t)!,
       cardForeground: Color.lerp(cardForeground, other.cardForeground, t)!,
       popover: Color.lerp(popover, other.popover, t)!,
-      popoverForeground:
-          Color.lerp(popoverForeground, other.popoverForeground, t)!,
+      popoverForeground: Color.lerp(
+        popoverForeground,
+        other.popoverForeground,
+        t,
+      )!,
       primary: Color.lerp(primary, other.primary, t)!,
-      primaryForeground:
-          Color.lerp(primaryForeground, other.primaryForeground, t)!,
+      primaryForeground: Color.lerp(
+        primaryForeground,
+        other.primaryForeground,
+        t,
+      )!,
       secondary: Color.lerp(secondary, other.secondary, t)!,
-      secondaryForeground:
-          Color.lerp(secondaryForeground, other.secondaryForeground, t)!,
+      secondaryForeground: Color.lerp(
+        secondaryForeground,
+        other.secondaryForeground,
+        t,
+      )!,
       muted: Color.lerp(muted, other.muted, t)!,
       mutedForeground: Color.lerp(mutedForeground, other.mutedForeground, t)!,
       accent: Color.lerp(accent, other.accent, t)!,
-      accentForeground:
-          Color.lerp(accentForeground, other.accentForeground, t)!,
+      accentForeground: Color.lerp(
+        accentForeground,
+        other.accentForeground,
+        t,
+      )!,
       destructive: Color.lerp(destructive, other.destructive, t)!,
-      destructiveForeground:
-          Color.lerp(destructiveForeground, other.destructiveForeground, t)!,
+      destructiveForeground: Color.lerp(
+        destructiveForeground,
+        other.destructiveForeground,
+        t,
+      )!,
       border: Color.lerp(border, other.border, t)!,
       input: Color.lerp(input, other.input, t)!,
       ring: Color.lerp(ring, other.ring, t)!,

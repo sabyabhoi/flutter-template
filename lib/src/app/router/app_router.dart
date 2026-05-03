@@ -7,6 +7,9 @@ import 'package:app/src/features/auth/presentation/sign_in_screen.dart';
 import 'package:app/src/features/auth/presentation/sign_up_screen.dart';
 import 'package:app/src/features/auth/presentation/splash_screen.dart';
 import 'package:app/src/features/home/presentation/home_screen.dart';
+import 'package:app/src/features/onboarding/application/onboarding_controller.dart';
+import 'package:app/src/features/onboarding/application/onboarding_state.dart';
+import 'package:app/src/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:app/src/features/services/presentation/services_screen.dart';
 import 'package:app/src/features/settings/presentation/settings_screen.dart';
 import 'package:app/src/features/shell/presentation/app_shell.dart';
@@ -47,12 +50,20 @@ GoRouter appRouter(Ref ref) {
           state.matchedLocation == AppRoute.signIn.path ||
           state.matchedLocation == AppRoute.signUp.path;
       final onSplash = state.matchedLocation == AppRoute.splash.path;
+      final onOnboarding = state.matchedLocation == AppRoute.onboarding.path;
 
       switch (value) {
         case Authenticated():
-          if (loggingIn || onSplash) return AppRoute.home.path;
+          if (loggingIn || onSplash || onOnboarding) {
+            return AppRoute.home.path;
+          }
           return null;
         case Unauthenticated():
+          // First-launch users see the onboarding tour before sign-in.
+          final completed = ref.read(onboardingControllerProvider).completed;
+          if (!completed) {
+            return onOnboarding ? null : AppRoute.onboarding.path;
+          }
           if (loggingIn) return null;
           return AppRoute.signIn.path;
         case AuthInitial():
@@ -64,6 +75,11 @@ GoRouter appRouter(Ref ref) {
         name: AppRoute.splash.name,
         path: AppRoute.splash.path,
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        name: AppRoute.onboarding.name,
+        path: AppRoute.onboarding.path,
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
         name: AppRoute.signIn.name,
@@ -132,13 +148,19 @@ GoRouter appRouter(Ref ref) {
   );
 }
 
-/// Bridges `ref.listen(authControllerProvider, …)` into a `Listenable`
-/// that `GoRouter.refreshListenable` understands.
+/// Bridges `ref.listen(authControllerProvider, …)` and the onboarding
+/// notifier into a `Listenable` that `GoRouter.refreshListenable`
+/// understands.
 class _GoRouterRefreshNotifier extends ChangeNotifier {
   _GoRouterRefreshNotifier(Ref ref) {
-    ref.listen<AsyncValue<AuthState>>(
-      authControllerProvider,
-      (_, _) => notifyListeners(),
-    );
+    ref
+      ..listen<AsyncValue<AuthState>>(
+        authControllerProvider,
+        (_, _) => notifyListeners(),
+      )
+      ..listen<OnboardingState>(
+        onboardingControllerProvider,
+        (_, _) => notifyListeners(),
+      );
   }
 }

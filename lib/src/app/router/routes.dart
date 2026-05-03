@@ -4,6 +4,7 @@
 /// code strings — that way refactors propagate automatically.
 enum AppRoute {
   splash(name: 'splash', path: '/'),
+  onboarding(name: 'onboarding', path: '/onboarding'),
   signIn(name: 'sign-in', path: '/sign-in'),
   signUp(name: 'sign-up', path: '/sign-up'),
   home(name: 'home', path: '/home'),
